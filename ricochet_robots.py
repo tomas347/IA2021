@@ -45,21 +45,16 @@ class Board:
         self.restrictions.append([x, y, barrier])
 
     def compute_restrictions(self, size):
+        n = size - 1
         for i in range(0,size):
             self.add_restriction(0, i, 'u')
             self.add_restriction(i, 0, 'l')
-            self.add_restriction(size, i, 'd')
-            self.add_restriction(i, size, 'r')
-    
-
-
+            self.add_restriction(n, i, 'd')
+            self.add_restriction(i, n, 'r')
 
     def robot_position(self, robot: str):
         """ Devolve a posição atual do robô passado como argumento. """
-        # TODO
-        pass
-
-    # TODO: outros metodos da classe
+        
 
 
 
