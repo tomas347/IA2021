@@ -33,11 +33,22 @@ class Board:
         self.matrix = np.zeros((size, size))
         self.restrictions = []
         self.compute_restrictions(size)
+        self.size = size
 
 
     def add_robot(self, robot_number, x, y):
         self.matrix[x][y] = robot_number
-    
+
+    def get_robot_number(self, robot):
+        if robot == 'Y':
+            return 1
+        if robot == 'G':
+            return 2
+        if robot == 'B':
+            return 3
+        if robot == 'R':
+            return 4
+
     def add_goal(self, goal_color, x ,y):
         self.matrix[x][y] = goal_color
     
@@ -54,15 +65,56 @@ class Board:
 
     def robot_position(self, robot: str):
         """ Devolve a posição atual do robô passado como argumento. """
-        
+        if (robot == 'Y'):
+            for i in range(0, self.size):
+                for j in range(0, self.size):
+                    if (self.matrix[i][j] == 1):
+                        return (i + 1, j + 1)
+        if (robot == 'G'):
+            for i in range(0, self.size):
+                for j in range(0, self.size):
+                    if (self.matrix[i][j] == 2):
+                        return (i + 1, j + 1)
+        if (robot == 'B'):
+            for i in range(0, self.size):
+                for j in range(0, self.size):
+                    if (self.matrix[i][j] == 3):
+                        return (i + 1, j + 1)
+        if (robot == 'R'):
+            for i in range(0, self.size):
+                for j in range(0, self.size):
+                    if (self.matrix[i][j] == 4):
+                        return (i + 1, j + 1)
+
 
 
 
 def parse_instance(filename: str) -> Board:
     """ Lê o ficheiro cujo caminho é passado como argumento e retorna
     uma instância da classe Board. """
-    # TODO
-    pass
+    fp = open(filename, 'r')
+    lines = fp.readlines()
+    fp.close()
+    
+    parsedLine = lines[0].split()
+    size = int(parsedLine[0])
+    b = Board(size)
+
+    for i in range(0, 4):
+        parsedLine = lines[i + 1].split()
+        b.add_robot(b.get_robot_number(parsedLine[0]), int(parsedLine[1]) - 1, int(parsedLine[2]) - 1)
+    
+    parsedLine = lines[5].split()
+    b.add_goal(b.get_robot_number(parsedLine[0]) + 4, int(parsedLine[1]) - 1, int(parsedLine[2]) - 1)
+
+    parsedLine = lines[6].split()
+    size = int(parsedLine[0])
+
+    for i in range(0, size):
+        parsedLine = lines[i + 7].split()
+        b.add_restriction(int(parsedLine[0]) - 1, int(parsedLine[1]) - 1, parsedLine[2])
+    return b
+
 
 
 class RicochetRobots(Problem):
