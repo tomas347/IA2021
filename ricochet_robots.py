@@ -10,6 +10,8 @@ from search import Problem, Node, astar_search, breadth_first_tree_search, \
     depth_first_tree_search, greedy_search
 import sys
 
+import numpy as np
+
 
 class RRState:
     state_id = 0
@@ -22,11 +24,35 @@ class RRState:
     def __lt__(self, other):
     	""" Este método é utilizado em caso de empate na gestão da lista
         de abertos nas procuras informadas. """
-        return self.id < other.id
+        #return self.id < other.id
 
 
 class Board:
     """ Representacao interna de um tabuleiro de Ricochet Robots. """
+    def __init__(self, size):
+        self.matrix = np.zeros((size, size))
+        self.restrictions = []
+        self.compute_restrictions(size)
+
+
+    def add_robot(self, robot_number, x, y):
+        self.matrix[x][y] = robot_number
+    
+    def add_goal(self, goal_color, x ,y):
+        self.matrix[x][y] = goal_color
+    
+    def add_restriction(self, x, y, barrier):
+        self.restrictions.append([x, y, barrier])
+
+    def compute_restrictions(self, size):
+        for i in range(0,size):
+            self.add_restriction(0, i, 'u')
+            self.add_restriction(i, 0, 'l')
+            self.add_restriction(size, i, 'd')
+            self.add_restriction(i, size, 'r')
+    
+
+
 
     def robot_position(self, robot: str):
         """ Devolve a posição atual do robô passado como argumento. """
@@ -34,6 +60,7 @@ class Board:
         pass
 
     # TODO: outros metodos da classe
+
 
 
 def parse_instance(filename: str) -> Board:
