@@ -212,7 +212,6 @@ class RicochetRobots(Problem):
                     if i[1] == position_limit[1] and i[0] <= position_limit[0] and i[0] > position[0]:
                         position_limit = (i[0] - 1, i[1])
 
-            
             state.board._move_robot(action[0], position_limit[0], position_limit[1])
             return state
 
