@@ -3,7 +3,7 @@
 # Além das funções e classes já definidas, podem acrescentar outras que considerem pertinentes.
 
 # Grupo 00:
-# 00000 Nome1
+# 90784 Tomás Leite de Castro
 # 00000 Nome2
 
 from search import Problem, Node, astar_search, breadth_first_tree_search, \
@@ -22,22 +22,28 @@ class RRState:
         RRState.state_id += 1
 
     def __lt__(self, other):
-    	""" Este método é utilizado em caso de empate na gestão da lista
-        de abertos nas procuras informadas. """
-        #return self.id < other.id
+        return self.id<other.id
 
 
 class Board:
     """ Representacao interna de um tabuleiro de Ricochet Robots. """
     def __init__(self, size):
-        self.matrix = np.zeros((size, size))
+        #Nesta representacao a cor dos robots e representada em numeros em vez de letras. 
+        #Robot Y == 1 , G == 2 , B == 3 , R == 4 respetivamente
+        self.robot_matrix = np.zeros((size, size))
+        self.left_matrix = np.zeros((size, size))
+        self.right_matrix = np.zeros((size, size))
+        self.up_matrix = np.zeros((size, size))
+        self.down_matrix = np.zeros((size, size))
         self.restrictions = []
         self.compute_restrictions(size)
         self.size = size
-
+        self.goal_x = 0
+        self.goal_y = 0
+        self.goal_color = 0
 
     def add_robot(self, robot_number, x, y):
-        self.matrix[x][y] = robot_number
+        self.robot_matrix[x][y] = robot_number
 
     def get_robot_number(self, robot):
         if robot == 'Y':
@@ -50,10 +56,28 @@ class Board:
             return 4
 
     def add_goal(self, goal_color, x ,y):
-        self.matrix[x][y] = goal_color
+        self.goal_x = x
+        self.goal_y = y
+        self.goal_color = goal_color
+
     
+    def is_goal(self):
+        return self.goal_color == self.robot_matrix[self.goal_x][self.goal_y]
+
+
     def add_restriction(self, x, y, barrier):
-        self.restrictions.append([x, y, barrier])
+        if barrier == 'l':
+            self.left_matrix[x][y] = 1
+            return
+        if barrier == 'r':
+            self.right_matrix[x][y] = 1
+            return
+        if barrier == 'u':
+            self.up_matrix[x][y] = 1
+            return
+        if barrier == 'd':
+            self.down_matrix[x][y] = 1
+            return
 
     def compute_restrictions(self, size):
         n = size - 1
@@ -68,22 +92,22 @@ class Board:
         if (robot == 'Y'):
             for i in range(0, self.size):
                 for j in range(0, self.size):
-                    if (self.matrix[i][j] == 1):
+                    if (self.robot_matrix[i][j] == 1):
                         return (i + 1, j + 1)
         if (robot == 'G'):
             for i in range(0, self.size):
                 for j in range(0, self.size):
-                    if (self.matrix[i][j] == 2):
+                    if (self.robot_matrix[i][j] == 2):
                         return (i + 1, j + 1)
         if (robot == 'B'):
             for i in range(0, self.size):
                 for j in range(0, self.size):
-                    if (self.matrix[i][j] == 3):
+                    if (self.robot_matrix[i][j] == 3):
                         return (i + 1, j + 1)
         if (robot == 'R'):
             for i in range(0, self.size):
                 for j in range(0, self.size):
-                    if (self.matrix[i][j] == 4):
+                    if (self.robot_matrix[i][j] == 4):
                         return (i + 1, j + 1)
 
 
@@ -105,7 +129,7 @@ def parse_instance(filename: str) -> Board:
         b.add_robot(b.get_robot_number(parsedLine[0]), int(parsedLine[1]) - 1, int(parsedLine[2]) - 1)
     
     parsedLine = lines[5].split()
-    b.add_goal(b.get_robot_number(parsedLine[0]) + 4, int(parsedLine[1]) - 1, int(parsedLine[2]) - 1)
+    b.add_goal(b.get_robot_number(parsedLine[0]), int(parsedLine[1]) - 1, int(parsedLine[2]) - 1)
 
     parsedLine = lines[6].split()
     size = int(parsedLine[0])
@@ -134,14 +158,15 @@ class RicochetRobots(Problem):
         'state' passado como argumento. A ação retornada deve ser uma
         das presentes na lista obtida pela execução de
         self.actions(state). """
-        # TODO
+
+        state.board
         pass
 
     def goal_test(self, state: RRState):
         """ Retorna True se e só se o estado passado como argumento é
         um estado objetivo. Deve verificar se o alvo e o robô da
         mesma cor ocupam a mesma célula no tabuleiro. """
-        # TODO
+        
         pass
 
     def h(self, node: Node):
