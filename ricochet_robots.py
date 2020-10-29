@@ -225,10 +225,8 @@ class RicochetRobots(Problem):
         
 
     def h(self, node: Node):
-        """ Função heuristica utilizada para a procura A*. """
-        # TODO
+        
         pass
-
 
 if __name__ == "__main__":
     # TODO:
