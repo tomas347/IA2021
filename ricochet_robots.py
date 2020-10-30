@@ -9,7 +9,7 @@
 from search import Problem, Node, astar_search, breadth_first_tree_search, \
     depth_first_tree_search, greedy_search
 import sys
-
+import copy
 import numpy as np
 
 
@@ -25,6 +25,13 @@ class RRState:
         return self.id < other.id
 
 
+def new_copy(obj):
+    class Empty(obj.__class__):
+        def __init__(self): pass
+    newcopy = Empty()
+    newcopy.__class__ = obj.__class__
+    return newcopy
+
 class Board:
     """ Representacao interna de um tabuleiro de Ricochet Robots. """
     def __init__(self, size):
@@ -38,6 +45,17 @@ class Board:
         self.goal_y = 0
         self.goal_robot = ''
         self.robot_dict = {}
+
+    def __copy__(self):
+        newcopy = new_copy(self)
+        newcopy.y_matrix = self.y_matrix
+        newcopy.x_matrix = self.x_matrix
+        newcopy.size = self.size
+        newcopy.goal_x = self.goal_x
+        newcopy.goal_y = self.goal_y
+        newcopy.goal_robot = self.goal_robot
+        newcopy.robot_dict = self.robot_dict.copy()
+        return newcopy
 
 
     def _add_robot(self, robot, x, y):
@@ -156,7 +174,7 @@ class RicochetRobots(Problem):
         actions += state.board.get_actions('G')
         actions += state.board.get_actions('B')
         return actions
-            
+        
 
     def result(self, state: RRState, action):
         """ Retorna o estado resultante de executar a 'action' sobre
@@ -164,11 +182,12 @@ class RicochetRobots(Problem):
         das presentes na lista obtida pela execução de
         self.actions(state). """
         # TOGO in if statement below: action in self.actions(state)
+
         if action in self.actions(state):
             position = state.board.robot_position(action[0], 0)
             if action[1] == 'l':
                 # Vamos verificar se existem obstaculos fixos a esquerda percorrendo a lista de obstaculos no eixo Y
-                for i in range (position[1], 0, -1):
+                for i in range (position[1], -1, -1):
                     if state.board.y_matrix[position[0]][i]:
                         position_limit = (position[0], i)
                         break
@@ -212,8 +231,13 @@ class RicochetRobots(Problem):
                     if i[1] == position_limit[1] and i[0] <= position_limit[0] and i[0] > position[0]:
                         position_limit = (i[0] - 1, i[1])
 
-            state.board._move_robot(action[0], position_limit[0], position_limit[1])
-            return state
+            new_state = RRState(copy.copy(state.board))
+            new_state.board._move_robot(action[0], position_limit[0], position_limit[1])
+            return new_state
+
+        
+        return state
+
 
         
     def goal_test(self, state: RRState):

@@ -9,7 +9,8 @@ from search import astar_search, breadth_first_tree_search, \
 def test1():
     # Ler tabuleiro do ficheiro i1.txt:
     board = parse_instance('i1.txt')
-
+    print(board.x_matrix)
+    print(board.y_matrix)
     # Imprimir as posições dos robôs:
     print(board.robot_position('Y'))
     print(board.robot_position('G'))
