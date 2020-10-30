@@ -27,8 +27,5 @@ board6 = parse_instance('instances/i11.txt')
 
 def compare_graph_searchers():
     """Prints a table of search results."""
-    compare_searchers(problems=[GraphProblem('Arad', 'Bucharest', romania_map),
-                                GraphProblem('Oradea', 'Neamt', romania_map),
-                                GraphProblem('Q', 'WA', australia_map), RicochetRobots(board1)],
-                      header=['Searcher', 'romania_map(Arad, Bucharest)',
-                              'romania_map(Oradea, Neamt)', 'australia_map'])
+    compare_searchers(problems=[RicochetRobots(board1), RicochetRobots(board4)],
+                      header=['Searcher', 'Instance 1', 'Instance 3'])
