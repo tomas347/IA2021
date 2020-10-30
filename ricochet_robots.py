@@ -254,8 +254,12 @@ class RicochetRobots(Problem):
         
 
     def h(self, node: Node):
-        
-        return 0
+        robot_pos = node.state.board.robot_position(node.state.board.goal_robot)
+        if node.state.board.goal_test():
+            return 0
+        if node.state.board.goal_x == robot_pos[0] or node.state.board.goal_y == robot_pos[1]:
+            return 1
+        return 2
 
 if __name__ == "__main__":
     # TODO:
