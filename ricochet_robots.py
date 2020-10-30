@@ -7,7 +7,7 @@
 # 00000 Nome2
 
 from search import Problem, Node, astar_search, breadth_first_tree_search, \
-    depth_first_tree_search, greedy_search, depth_first_graph_search, breadth_first_graph_search
+    depth_first_tree_search, greedy_search
 import sys
 import copy
 import numpy as np
