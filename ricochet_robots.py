@@ -2,12 +2,12 @@
 # Devem alterar as classes e funções neste ficheiro de acordo com as instruções do enunciado.
 # Além das funções e classes já definidas, podem acrescentar outras que considerem pertinentes.
 
-# Grupo 00:
+# Grupo 47:
 # 90784 Tomás Leite de Castro
 # 00000 Nome2
 
 from search import Problem, Node, astar_search, breadth_first_tree_search, \
-    depth_first_tree_search, greedy_search
+    depth_first_tree_search, greedy_search, iterative_deepening_search
 import sys
 import copy
 import numpy as np
@@ -241,7 +241,7 @@ class RicochetRobots(Problem):
             return new_state
 
         new_state = RRState(copy.copy(state.board))
-        return state
+        return new_state
 
 
         
@@ -270,7 +270,7 @@ if __name__ == "__main__":
     board = parse_instance(sys.argv[1])
     initial_state = RRState(board)
     problem = RicochetRobots(board, initial_state)
-    finish_node = astar_search(problem)
+    finish_node = iterative_deepening_search(problem)
     sol = finish_node.solution()
     print(len(sol))
     for i in sol:
