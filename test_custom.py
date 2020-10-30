@@ -27,5 +27,7 @@ board6 = parse_instance('instances/i11.txt')
 
 def compare_graph_searchers():
     """Prints a table of search results."""
-    compare_searchers(problems=[RicochetRobots(board1), RicochetRobots(board4)],
+    compare_searchers(problems=[RicochetRobots(board1), RicochetRobots(board4), RicochetRobots(board6)],
                       header=['Searcher', 'Instance 1', 'Instance 3'])
+
+
