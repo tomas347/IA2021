@@ -30,4 +30,4 @@ def compare_graph_searchers():
     compare_searchers(problems=[RicochetRobots(board1), RicochetRobots(board4), RicochetRobots(board6)],
                       header=['Searcher', 'Instance 1', 'Instance 3'])
 
-
+compare_graph_searchers()
