@@ -31,7 +31,8 @@ print(s4.board.robot_position('R'))
 board = parse_instance("instances/i11.txt")
 problem = RicochetRobots(board)
 s0 = RRState(board)
-
+print(s0.board.y_matrix)
+print(s0.board.x_matrix)
 # Aplicar as ações que resolvem a instância
 print(('Y', 'l') in problem.actions(s0))
 s1 = problem.result(s0, ('Y', 'l'))

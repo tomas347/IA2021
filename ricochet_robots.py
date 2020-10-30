@@ -7,7 +7,7 @@
 # 00000 Nome2
 
 from search import Problem, Node, astar_search, breadth_first_tree_search, \
-    depth_first_tree_search, greedy_search
+    depth_first_tree_search, greedy_search, depth_first_graph_search, breadth_first_graph_search
 import sys
 import copy
 import numpy as np
@@ -130,6 +130,9 @@ class Board:
             return self.robot_dict[robot]
         else:
             return (self.robot_dict[robot][0] + 1, self.robot_dict[robot][1] + 1)
+    
+    def goal_test(self):
+        return self.get_goal_position() == self.robot_dict[self.goal_robot]
 
 
 def parse_instance(filename: str) -> Board:
@@ -158,12 +161,14 @@ def parse_instance(filename: str) -> Board:
         b._add_restriction(int(parsedLine[0]) - 1, int(parsedLine[1]) - 1, parsedLine[2])
     return b
 
-
-
 class RicochetRobots(Problem):
-    def __init__(self, board: Board):
+    def __init__(self, board: Board, state: RRState = None):
         """ O construtor especifica o estado inicial. """
-        self.initial = board
+        if state == None:
+            self.initial = RRState(board)
+        else:
+            self.initial = state
+
 
     def actions(self, state: RRState):
         """ Retorna uma lista de ações que podem ser executadas a
@@ -207,7 +212,7 @@ class RicochetRobots(Problem):
                 
                 for i in state.board.robot_dict.values():
                     if i[0] == position_limit[0] and i[1] <= position_limit[1] and i[1] > position[1]:
-                        position_limit = (i[0], i[1] + 1)
+                        position_limit = (i[0], i[1] - 1)
 
             
             if action[1] == 'u':
@@ -235,7 +240,7 @@ class RicochetRobots(Problem):
             new_state.board._move_robot(action[0], position_limit[0], position_limit[1])
             return new_state
 
-        
+        new_state = RRState(copy.copy(state.board))
         return state
 
 
@@ -245,12 +250,12 @@ class RicochetRobots(Problem):
         um estado objetivo. Deve verificar se o alvo e o robô da
         mesma cor ocupam a mesma célula no tabuleiro. """
 
-        return state.board.get_goal_position() == state.board.robot_dict[state.board.goal_robot]
+        return state.board.goal_test()
         
 
     def h(self, node: Node):
         
-        pass
+        return 0
 
 if __name__ == "__main__":
     # TODO:
@@ -258,4 +263,11 @@ if __name__ == "__main__":
     # Usar uma técnica de procura para resolver a instância,
     # Retirar a solução a partir do nó resultante,
     # Imprimir para o standard output no formato indicado.
-    pass
+    board = parse_instance(sys.argv[1])
+    initial_state = RRState(board)
+    problem = RicochetRobots(board, initial_state)
+    finish_node = astar_search(problem)
+    sol = finish_node.solution()
+    print(len(sol))
+    for i in sol:
+        print(i[0] + ' ' + i[1])
